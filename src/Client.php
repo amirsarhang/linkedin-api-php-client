@@ -86,7 +86,7 @@ class Client
      * Default API root URL
      * string
      */
-    const API_ROOT = 'https://api.linkedin.com/v2/';
+    const API_ROOT = 'https://api.linkedin.com/rest/';
 
     /**
      * API Root URL
@@ -136,6 +136,7 @@ class Client
     protected $apiHeaders = [
         'Content-Type' => 'application/json',
         'x-li-format' => 'json',
+        'LinkedIn-Version' => '202310',
     ];
 
     /**
