@@ -585,7 +585,7 @@ class Client
     public function get($endpoint, array $params = [] , $version = null)
     {
         if(@$version){
-            $this->version = 'new';
+            $this->version = $version;
         }
         return $this->api($endpoint, $params, Method::GET);
     }
