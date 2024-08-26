@@ -87,6 +87,7 @@ class Client
      * string
      */
     const API_ROOT = 'https://api.linkedin.com/rest/';
+    const OLD_API_ROOT = 'https://api.linkedin.com/v2/';
 
     /**
      * API Root URL
@@ -94,6 +95,11 @@ class Client
      * @var string
      */
     protected $apiRoot = self::API_ROOT;
+    protected $oldApiRoot = self::OLD_API_ROOT;
+    protected $version = 'new';
+
+
+
 
     /**
      * OAuth API URL
@@ -108,6 +114,7 @@ class Client
      * @var bool
      */
     protected $useTokenParam = false;
+
 
     /**
      * @return bool
@@ -136,7 +143,7 @@ class Client
     protected $apiHeaders = [
         'Content-Type' => 'application/json',
         'x-li-format' => 'json',
-        'LinkedIn-Version' => '202407',
+        'LinkedIn-Version' => '202310',
     ];
 
     /**
@@ -167,6 +174,10 @@ class Client
      *
      * @return string
      */
+    public function getOldApiRoot()
+    {
+        return $this->oldApiRoot;
+    }
     public function getApiRoot()
     {
         return $this->apiRoot;
@@ -528,7 +539,7 @@ class Client
      * @return array
      * @throws \LinkedIn\Exception
      */
-    public function api($endpoint, array $params = [], $method = Method::GET)
+    public function api($endpoint, array $params = [], $method = Method::GET )
     {
         $headers = $this->getApiHeaders();
         $options = $this->prepareOptions($params, $method);
@@ -538,10 +549,19 @@ class Client
         } else {
             $headers['Authorization'] = 'Bearer ' . $this->accessToken->getToken();
         }
-        $guzzle = new GuzzleClient([
-            'base_uri' => $this->getApiRoot(),
-            'headers' => $headers,
-        ]);
+        if($this->version != 'new'){
+            $guzzle = new GuzzleClient([
+                'base_uri' => $this->getOldApiRoot(),
+                'headers' => $headers,
+            ]);
+        }
+        else{
+            $guzzle = new GuzzleClient([
+                'base_uri' => $this->getApiRoot(),
+                'headers' => $headers,
+            ]);
+        }
+       
         if (!empty($params) && Method::GET === $method) {
             $endpoint .= '?' . http_build_query($params);
         }
@@ -562,10 +582,14 @@ class Client
      * @return array
      * @throws \LinkedIn\Exception
      */
-    public function get($endpoint, array $params = [])
+    public function get($endpoint, array $params = [] , $version = null)
     {
+        if(@$version){
+            $this->version = 'new';
+        }
         return $this->api($endpoint, $params, Method::GET);
     }
+
 
     /**
      * Make API call to LinkedIn using POST method
