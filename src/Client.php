@@ -600,8 +600,11 @@ class Client
      * @return array
      * @throws \LinkedIn\Exception
      */
-    public function post($endpoint, array $params = [])
+    public function post($endpoint, array $params = [] , $version = null)
     {
+        if(@$version){
+            $this->version = $version;
+        }
         return $this->api($endpoint, $params, Method::POST);
     }
 
