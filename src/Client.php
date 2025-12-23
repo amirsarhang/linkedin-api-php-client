@@ -143,7 +143,7 @@ class Client
     protected $apiHeaders = [
         'Content-Type' => 'application/json',
         'x-li-format' => 'json',
-        'LinkedIn-Version' => '202508',
+        'LinkedIn-Version' => '202511',
     ];
 
     /**
